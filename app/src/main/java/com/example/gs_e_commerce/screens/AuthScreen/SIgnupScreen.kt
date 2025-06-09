@@ -31,6 +31,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -39,9 +40,10 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 
 @Composable
-fun SignUpScreen(modifier: Modifier = Modifier, navController: NavHostController) {
+fun SignUpScreen(modifier: Modifier = Modifier, navController: NavHostController,authViewModel: AuthViewModel=viewModel()) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("") } // Add name state variable
 
     // Get the current context for showing toast
     val context = LocalContext.current
@@ -79,6 +81,20 @@ fun SignUpScreen(modifier: Modifier = Modifier, navController: NavHostController
             //  modifier = Modifier.padding(bottom = 16.dp)
         )
 
+        // Name Field (Add this new field)
+        OutlinedTextField(
+            value = name,
+            onValueChange = { name = it },
+            label = { Text("Name") },
+            singleLine = true,
+            shape = RoundedCornerShape(16.dp),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next
+            ),
+            modifier = Modifier.fillMaxWidth()
+        )
+
         // Email Field
         OutlinedTextField(
             value = email,
@@ -108,21 +124,25 @@ fun SignUpScreen(modifier: Modifier = Modifier, navController: NavHostController
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Login Button
-        // Signup Button (was incorrectly labeled as Login)
+        // Signup Button (Fix the parameter order)
         Button(
-            onClick = { 
-                // Show toast message for successful account creation
-                Toast.makeText(context, "Account created successfully!\n You can login now", Toast.LENGTH_SHORT).show()
-                // Navigate to auth screen after successful signup
-                navController.navigate("auth")
+            onClick = {
+                authViewModel.signup(email, password, name) { success, errorMessage ->
+                    if (success) {
+                        Toast.makeText(context, "Account created successfully!\nYou can login now", Toast.LENGTH_SHORT).show()
+                        navController.navigate("auth")
+                    } else {
+                        Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                    }
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp)
         ) {
-            Text("Sign Up") // Fixed button text from "Login" to "Sign Up"
+            Text("Sign Up")
         }
+
 
         // Sign Up Text
         Row(
@@ -134,7 +154,7 @@ fun SignUpScreen(modifier: Modifier = Modifier, navController: NavHostController
         ) {
             Text("Already have an account?")
             TextButton(onClick = { navController.navigate("auth") }) {
-                Text("Sign In") // Fixed text from "Sign Up" to "Sign In"
+                Text("Login") // Fixed text from "Sign Up" to "Sign In"
             }
         }
 

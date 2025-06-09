@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "311726975910",
+    "project_id": "gs-e-commerce-d3a99",
+    "storage_bucket": "gs-e-commerce-d3a99.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:311726975910:android:e8ce0d5ba6813f61e93d67",
+        "android_client_info": {
+          "package_name": "com.example.gs_e_commerce"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmHBMjVKM2Ag-n8IDSqJdmYjmlqADQMDs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
