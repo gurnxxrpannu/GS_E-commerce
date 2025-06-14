@@ -16,13 +16,15 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.airbnb.lottie.compose.*
 
 @Composable
-fun AuthScreen(modifier: Modifier = Modifier, navController: NavHostController) {
+fun AuthScreen(modifier: Modifier = Modifier, navController: NavHostController,authViewModel: AuthViewModel= viewModel()) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
     
     // Get the current context for showing toast
     val context = LocalContext.current
@@ -101,16 +103,26 @@ fun AuthScreen(modifier: Modifier = Modifier, navController: NavHostController) 
         
         // Login Button
         Button(
-            onClick = { 
-                // Show toast message for successful login
-                Toast.makeText(context, "Login successful!", Toast.LENGTH_SHORT).show()
-                // TODO: Implement actual login logic
+            onClick = {
+                isLoading=true
+                authViewModel.login(email, password){
+                    success,errorMessage->
+                    if(success){
+                        isLoading=false
+                        Toast.makeText(context, "Login successful!", Toast.LENGTH_SHORT).show()
+                        navController.navigate("home"){popUpTo("auth"){inclusive=true} }
+                    }else{
+                        isLoading=false
+                        Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                    }
+                }
             },
+            enabled = !isLoading, // Disable the button if isLoading is true
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp)
         ) {
-            Text("Login") // Fixed button text from "Signup" to "Login"
+            Text(text=if(isLoading)"Loging Inn!!!" else "Login") // Fixed button text from "Signup" to "Login"
         }
         
         // Sign Up Text

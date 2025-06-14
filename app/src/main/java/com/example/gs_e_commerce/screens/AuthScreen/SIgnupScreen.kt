@@ -44,6 +44,7 @@ fun SignUpScreen(modifier: Modifier = Modifier, navController: NavHostController
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var name by remember { mutableStateOf("") } // Add name state variable
+    var isLoading by remember { mutableStateOf(false) }
 
     // Get the current context for showing toast
     val context = LocalContext.current
@@ -127,15 +128,19 @@ fun SignUpScreen(modifier: Modifier = Modifier, navController: NavHostController
         // Signup Button (Fix the parameter order)
         Button(
             onClick = {
+                isLoading=true
                 authViewModel.signup(email, password, name) { success, errorMessage ->
                     if (success) {
-                        Toast.makeText(context, "Account created successfully!\nYou can login now", Toast.LENGTH_SHORT).show()
+                        isLoading=false
+                        Toast.makeText(context,  "Account created successfully!\nYou can login now", Toast.LENGTH_SHORT).show()
                         navController.navigate("auth")
                     } else {
+                        isLoading=false
                         Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
                     }
                 }
             },
+            enabled = !isLoading, // Disable the button if isLoading is true
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp)

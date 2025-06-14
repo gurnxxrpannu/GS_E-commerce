@@ -7,12 +7,19 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.gs_e_commerce.screens.AuthScreen.AuthScreen
 import com.example.gs_e_commerce.screens.AuthScreen.SignUpScreen
+import com.example.gs_e_commerce.screens.Homescreen.HomeScreen
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 
 @Composable
 fun AppNavigation(modifier: Modifier){
     val navController=rememberNavController()
 
-    NavHost(navController=navController,startDestination = "auth") {
+    val isLoggedIn= Firebase.auth.currentUser!=null
+
+    val firstPage=if(isLoggedIn)"home" else "auth"
+
+    NavHost(navController=navController,startDestination = firstPage) {
 
         composable("auth"){
            AuthScreen(modifier,navController)
@@ -20,6 +27,9 @@ fun AppNavigation(modifier: Modifier){
 
         composable("signup"){
             SignUpScreen(modifier,navController)
+        }
+        composable("home"){
+            HomeScreen(modifier,navController)
         }
 
 
